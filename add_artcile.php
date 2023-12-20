@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['titles'];
     $article = $_POST['articles'];
     $image = time() . '_' . $_FILES['images']['name'];
+    $category = $_POST['category'];
 
     if (empty($_POST['titles'])) {
         $errors['titles'] = 'Title cannot be empty';
@@ -41,13 +42,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($errors)) {
+        define('UPLOAD', $_SERVER['DOCUMENT_ROOT'] . '/PHP/Blog/photo');
 
         $insert = "INSERT INTO `articles`(`id_article`, `titre`, `contenu`, `date_creation`, `photo`, `auteur`) 
         VALUES ('','$title','$article','','$image','')";
         $query = $db->prepare($insert);
-        $query->execute();
+        if ($query->execute()) {
+            copy($_FILES['images']['tmp_name'], UPLOAD . $image);
+        }
     }
 
+    if (empty($_POST['category'])) {
+        $errors['category'] = 'Category cannot be empty';
+    }
+
+    $queryCategory = $db->query("SELECT * FROM `categorie`");
+    $categorys = $queryCategory->fetchAll(PDO::FETCH_ASSOC);
+
+    var_dump($categorys);
     var_dump($errors);
 }
 ?>
@@ -60,6 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div>
                     <label for="titles">title</label>
                     <input for="text" name="titles" id="titles" class="form-control" placeholder="Title of the article"></input>
+                    <select name="category" id="category-select">
+                        <option value="">--Please choose a Category--</option>
+                        <?php
+                        foreach ($categorys as $category) {
+                            echo '<option value="' . $category['id_categorie'] . '">' . $category['nom'] . '</option>';
+                        }
+                        ?>
+                    </select>
                     <textarea class="form-control" name="articles" id="article" cols="30" rows="10"></textarea>
                 </div>
                 <div class="form-group">
