@@ -10,5 +10,6 @@ require_once './db.php';
 
 
 <?php
+require_once './card.php';
 require_once './partial/footer.php'
 ?>

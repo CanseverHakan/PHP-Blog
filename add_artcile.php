@@ -41,11 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors['images'] = 'Image size too large';
     }
 
+    $currentUser = $_SESSION['user']['id_member'];
+    var_dump($currentUser);
+
     if (empty($errors)) {
         define('UPLOAD', $_SERVER['DOCUMENT_ROOT'] . '/PHP/Blog/photo/');
 
-        $insert = "INSERT INTO `articles`(`id_article`, `titre`, `contenu`, `photo`, `auteur`, `id_categorie`) 
-        VALUES ('','$title','$article','$image','', $category)";
+        $insert = "INSERT INTO `articles`(`id_article`, `titre`, `contenu`, `photo`, `auteur`, `id_categorie`, `id_member`) 
+        VALUES ('','$title','$article','$image','', $category, $currentUser)";
         $query = $db->prepare($insert);
         if ($query->execute()) {
             copy($_FILES['images']['tmp_name'], UPLOAD . $image);
