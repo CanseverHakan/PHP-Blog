@@ -25,8 +25,8 @@
               Article
             </a>
             <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="login.php">Login</a></li>
               <li><a class="dropdown-item" href="add_artcile.php">Add article</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>

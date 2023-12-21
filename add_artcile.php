@@ -42,10 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($errors)) {
-        define('UPLOAD', $_SERVER['DOCUMENT_ROOT'] . '/PHP/Blog/photo');
+        define('UPLOAD', $_SERVER['DOCUMENT_ROOT'] . '/PHP/Blog/photo/');
 
-        $insert = "INSERT INTO `articles`(`id_article`, `titre`, `contenu`, `date_creation`, `photo`, `auteur`) 
-        VALUES ('','$title','$article','','$image','')";
+        $insert = "INSERT INTO `articles`(`id_article`, `titre`, `contenu`, `date_creation`, `photo`, `auteur`, `id_categorie`) 
+        VALUES ('','$title','$article','','$image','', $category)";
         $query = $db->prepare($insert);
         if ($query->execute()) {
             copy($_FILES['images']['tmp_name'], UPLOAD . $image);
@@ -57,10 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $queryCategory = $db->query("SELECT * FROM `categorie`");
+    $queryCategory->execute();
     $categorys = $queryCategory->fetchAll(PDO::FETCH_ASSOC);
 
-    var_dump($categorys);
-    var_dump($errors);
 }
 ?>
 
@@ -68,11 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <form action="" method="post" enctype="multipart/form-data">
+            <form action="" method="post" enctype="multipart/form-data" >
                 <div>
                     <label for="titles">title</label>
-                    <input for="text" name="titles" id="titles" class="form-control" placeholder="Title of the article"></input>
-                    <select name="category" id="category-select">
+                    <input for="text" name="titles" id="titles" class="form-control" 
+                     placeholder="Title of the article" value="<?php if(isset($title)) {echo $title;} ?>">
+                    </input>
+                    <div class="text-danger"><?= $errors['titles'] ?? ''?></div>
+                    <select name="category" id="category-select" >
                         <option value="">--Please choose a Category--</option>
                         <?php
                         foreach ($categorys as $category) {
@@ -80,11 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         }
                         ?>
                     </select>
-                    <textarea class="form-control" name="articles" id="article" cols="30" rows="10"></textarea>
+                    <div class="text-danger"><?= $errors['category'] ?? ''?></div>
+                    <textarea class="form-control" name="articles" id="article"
+                    value="<?php if(isset($article)) {echo $article;} ?>" cols="30" rows="10">
+                    </textarea>
+                    <div class="text-danger"><?= $errors['articles'] ?? ''?></div>
                 </div>
                 <div class="form-group">
                     <label for="images">image</label>
                     <input type="file" name="images" id="images" class="form-control">
+                    <div class="text-danger"><?= $errors['images'] ?? ''?></div>
                 </div>
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
