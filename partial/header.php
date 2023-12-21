@@ -1,3 +1,15 @@
+<?php
+require_once './function.php';
+require_once './db.php';
+
+if (isset($_GET['action']) && $_GET['action'] == 'logout') {
+  unset($_SESSION['user']);
+  header('Location: login.php');
+  exit;
+}
+
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -9,7 +21,7 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">My Blog</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,15 +37,29 @@
               Article
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="login.php">Login</a></li>
-              <li><a class="dropdown-item" href="add_artcile.php">Add article</a></li>
+              <?php if (!userConnected()) : ?>
+                <li><a class="dropdown-item" href="register.php">Register</a></li>
+                <li><a class="dropdown-item" href="login.php">Login</a></li>
+              <?php endif; ?>
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <li><a class="dropdown-item" href="add_artcile.php">Add article</a></li>
             </ul>
           </li>
         </ul>
       </div>
+      <?php if (userConnected()) : ?>
+        <div class="m-auto">
+          <div class="text-white">
+            <?= $_SESSION['user']['email'] ?>
+          </div>
+          <div>
+            <a class="nav-link text-white" href="login.php?action=logout">
+              Logout
+            </a>
+          </div>
+        </div>
+      <?php endif; ?>
     </div>
   </nav>

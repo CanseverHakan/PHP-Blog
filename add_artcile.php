@@ -44,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($errors)) {
         define('UPLOAD', $_SERVER['DOCUMENT_ROOT'] . '/PHP/Blog/photo/');
 
-        $insert = "INSERT INTO `articles`(`id_article`, `titre`, `contenu`, `date_creation`, `photo`, `auteur`, `id_categorie`) 
-        VALUES ('','$title','$article','','$image','', $category)";
+        $insert = "INSERT INTO `articles`(`id_article`, `titre`, `contenu`, `photo`, `auteur`, `id_categorie`) 
+        VALUES ('','$title','$article','$image','', $category)";
         $query = $db->prepare($insert);
         if ($query->execute()) {
             copy($_FILES['images']['tmp_name'], UPLOAD . $image);
